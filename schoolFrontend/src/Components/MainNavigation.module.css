@@ -1,0 +1,17 @@
+.heading {
+
+  font-weight: bold;
+  border-bottom: 5px solid black;
+}
+
+.heading.morning {
+  color: green;
+}
+
+.heading.afternoon {
+  color: purple;
+}
+
+.heading.night {
+  color: blue;
+}
