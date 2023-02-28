@@ -2,7 +2,7 @@ import React from 'react';
 import { useParams, Link, useRouteLoaderData } from 'react-router-dom';
 function StudentDetailsPage(){
 	const data = useRouteLoaderData('student-detail');
-	console.log(data);
+	console.log("Student Detail page data "+data);
 	const params = useParams();
 	return (
 		<>
