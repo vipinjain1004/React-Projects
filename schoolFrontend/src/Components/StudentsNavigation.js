@@ -3,18 +3,19 @@ import { NavLink } from 'react-router-dom';
 import classes from './StudentNavigation.module.css'
 function StudentsNavigation(){
 	return (
-<header>
-	<nav>
-		<ul>
-			<li>
-				<NavLink to="/students" className = {({isActive}) => isActive ? classes.heading : undefined} end >All Students</NavLink>
-			</li>
-			<li>
-				<NavLink to="/students/new" className = {({isActive}) => isActive ? classes.heading : undefined}>New Student</NavLink>
-			</li>
-		</ul>
-	</nav>
-</header>);
+		<>
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+  <NavLink to="/students"  className = {({isActive}) => isActive ? `nav-link  active` : `nav-link `} end >All Students</NavLink>
+
+  </li>
+  <li class="nav-item">
+  <NavLink to="/students/new"  className = {({isActive}) => isActive ? `nav-link active`: `nav-link `}>New Student</NavLink>
+  </li>
+</ul>
+</>
+
+);
 
 }
 export default StudentsNavigation;

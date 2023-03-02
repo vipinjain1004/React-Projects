@@ -12,7 +12,9 @@
   "author": "CodeMix",
   "license": "ISC",
   "dependencies": {
+    "bootstrap": "^5.2.3",
     "react": "^16.2.0",
+    "react-bootstrap": "^2.7.2",
     "react-dom": "^16.2.0",
     "react-route": "^1.0.3",
     "react-router-dom": "^6.8.1",

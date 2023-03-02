@@ -10,17 +10,22 @@ export function getAuthKey() {
     if (tokenDuration < 0) {
         return 'EXPIRED';
     }
-
     return userKey;
 }
 
 export function tokenLoader() {
-    return getAuthKey();
+    const userDate = {
+        auth: getAuthKey(),
+        user_name : getUserName()
+    }
+
+        return userDate;
+   
 }
 export function checkAuthLoader() {
     const token = getAuthKey();
     if (!token) {
-        return redirect('/');
+        return redirect('/login');
     }
     return token;
 }
@@ -31,4 +36,7 @@ export function getTokenDuration() {
     const duration = expirationDate.getTime() - now.getTime();
     console.log("Login duratoin time " + duration);
     return duration;
+}
+export function getUserName(){
+    return localStorage.getItem('user_name');
 }

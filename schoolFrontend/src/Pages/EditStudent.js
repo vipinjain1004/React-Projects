@@ -7,7 +7,6 @@ function EditStudentPage(){
 	console.log(data);
 	return (
 		<>
-	<h1>Edit Page</h1>
 	<NewStudentForm student = {data}/>
 	</>
 	)

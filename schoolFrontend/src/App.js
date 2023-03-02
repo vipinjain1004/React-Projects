@@ -12,6 +12,7 @@ import LoginPage from './Pages/Login';
 import { action as loginAction } from './Components/LoginForm';
 import { action as logoutAction } from './Components/logout';
 import { tokenLoader, checkAuthLoader } from './utils/LoginUtils';
+import StartupPage from './Pages/Startup';
 
 const router = createBrowserRouter([
 	{
@@ -21,6 +22,7 @@ const router = createBrowserRouter([
 		loader: tokenLoader,
 		children: [
 			{ index: true, path: '', element: <HomePage /> },
+			{ path: 'startup', element: <StartupPage /> },
 			{ path: 'login', element: <LoginPage />, action: loginAction },
 			{ path: 'logout', action: logoutAction },
 			{
