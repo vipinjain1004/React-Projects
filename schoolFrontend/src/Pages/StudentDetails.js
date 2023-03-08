@@ -16,38 +16,19 @@ export default StudentDetailsPage;
 
 export async function loader({request, params}){
 	const studentId = params.studentId;
-	const studentData = await [
-		{
-		"id": "s1",
-		"first_name": "Vipin1",
-		"middle_name": "Kumar",
-		"last_name": "Jain",
-		"f_f_Name": "Vinay",
-		"f_m_Name": "Kumar",
-		"f_l_Name": "Jain",
-		"dob": "2023-02-21"
-	},
-	{
-		"id": "s2",
-		"first_name": "Vikalp",
-		"middle_name": "Kumar",
-		"last_name": "Jain",
-		"f_f_Name": "Vinay",
-		"f_m_Name": "Kumar",
-		"f_l_Name": "Jain",
-		"dob": "2023-02-21"
-	},
-	{
-		"id": "s3",
-		"first_name": "Vivek",
-		"middle_name": "Kumar",
-		"last_name": "Jain",
-		"f_f_Name": "Vinay",
-		"f_m_Name": "Kumar",
-		"f_l_Name": "Jain",
-		"dob": "2023-02-21"
-	}
-];
-const student = studentData.filter(student=> student.id==studentId)
-	return JSON.stringify(student);
+	const url = '/student/'+studentId+'/get';
+	const response = await fetch(url, {  // Enter your IP address here
+		method: 'GET', 	
+		// body data type must match "Content-Type" header
+	  });	
+
+	if (!response.ok) {
+		console.log('Data coud not be fetched!');
+	  throw new Error('Data coud not be fetched!')
+	} else {
+		console.log(response);
+	  return response;
+	}	  
+  return null;	
+
 };

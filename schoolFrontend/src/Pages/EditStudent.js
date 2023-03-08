@@ -7,10 +7,8 @@ function EditStudentPage(){
 	console.log(data);
 	return (
 		<>
-	<NewStudentForm student = {data}/>
+	<NewStudentForm studentDetails = {data}/>
 	</>
 	)
-
-
 }
 export default EditStudentPage;

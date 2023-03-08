@@ -14,28 +14,29 @@ function MainNavigation() {
 				aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
-			
+
 			<div class="collapse navbar-collapse" >
-    <ul class="navbar-nav mr-auto">
+				<ul class="navbar-nav mr-auto">
 
 					<li class="nav-item active">
 
-						<NavLink to="/" className = {({isActive}) => isActive ? `nav-link  active` : `nav-link `}  end >
+						<NavLink to="/" className={({ isActive }) => isActive ? `nav-link  active` : `nav-link `} end >
 							Home</NavLink>
 					</li>
-					{userKey && <li>
-						<NavLink to="/students"  className = {({isActive}) => isActive ? `nav-link  active` : `nav-link `} >Students</NavLink>
+					{userKey && <li class="nav-item"> 
+						<NavLink to="/students" className={({ isActive }) => isActive ? `nav-link  active` : `nav-link `} >Students</NavLink>
 					</li>}
 
-					{userKey && (<li class="nav-item"><Form action='/logout' method='post'>
-						<button class="btn btn-outline-success">Logout</button>
-					</Form></li>)}
-					{!userKey && (<li class="nav-item"><NavLink to="/login"  className = {({isActive}) => isActive ? `nav-link  active` : `nav-link `}  >Login</NavLink></li>)}
-			
+					{userKey && (<li class="nav-item">
+						<button class="btn btn-outline-success"><Form action='/logout' method='post'>Logout</Form></button>
+					</li>)}
+					{!userKey && (<li class="nav-item"><NavLink to="/login" className={({ isActive }) => isActive ? `nav-link  active` : `nav-link `}  >Login</NavLink></li>)}
+
 				</ul>
-				{userName && <span class="navbar-text">
+				{userName && <span class="navbar-text" style = {{"position": "absolute",
+  "right": "3rem"}}>
 					Welcome : {userName}
-    			</span>}
+				</span>}
 			</div>
 		</nav>
 		<nav class="navbar fixed-bottom navbar-light bg-light">

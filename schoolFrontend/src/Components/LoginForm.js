@@ -2,6 +2,7 @@ import React from 'react';
 import { Form, useFormAction, redirect, useActionData } from 'react-router-dom';
 import { useNavigate, json } from "react-router";
 function LoginForm() {
+	
 	const errData = useActionData();
 	var errData1 = '';
 	if (errData) {
@@ -56,10 +57,7 @@ function LoginForm() {
 									style={{ 'padding-left': '2.5rem', 'padding-right': '2.5rem', margin: '2rem' }}>Cancel</button>
 								<p class="small fw-bold mt-2 pt-1 mb-0">Don't have an account? <a href="#!"
 									class="link-danger">Register</a></p>
-
-
 							</div>
-
 						</Form>
 					</div>
 				</div>
