@@ -12,6 +12,7 @@ import LoginPage from './Pages/Login';
 import { action as loginAction } from './Components/LoginForm';
 import { action as logoutAction } from './Components/logout';
 import { tokenLoader, checkAuthLoader } from './utils/LoginUtils';
+import {action as deleteAction} from './Components/DeleteStudent';
 
 const router = createBrowserRouter([
 	{
@@ -20,7 +21,7 @@ const router = createBrowserRouter([
 		id: 'root',
 		loader: tokenLoader,
 		children: [
-			{ index: true, path: '', element: <HomePage /> },			
+			{ index: true, path: '', element: <HomePage /> },
 			{ path: 'login', element: <LoginPage />, action: loginAction },
 			{ path: 'logout', action: logoutAction },
 			{
@@ -50,7 +51,12 @@ const router = createBrowserRouter([
 								element: <StudentDetailsPage />,
 								loader: checkAuthLoader
 							},
-							{ path: 'edit', element: <EditStudentPage />, action: newEventAction, loader: checkAuthLoader }
+							{
+								path: 'edit',
+								element: <EditStudentPage />,
+								action: newEventAction,
+								loader: checkAuthLoader
+							}
 						]
 					},
 

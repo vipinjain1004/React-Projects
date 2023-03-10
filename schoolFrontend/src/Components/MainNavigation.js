@@ -28,7 +28,7 @@ function MainNavigation() {
 					</li>}
 
 					{userKey && (<li class="nav-item">
-						<button class="btn btn-outline-success"><Form action='/logout' method='post'>Logout</Form></button>
+						<Form action='/logout' method='post'><button class="btn btn-outline-success">Logout</button></Form>
 					</li>)}
 					{!userKey && (<li class="nav-item"><NavLink to="/login" className={({ isActive }) => isActive ? `nav-link  active` : `nav-link `}  >Login</NavLink></li>)}
 
