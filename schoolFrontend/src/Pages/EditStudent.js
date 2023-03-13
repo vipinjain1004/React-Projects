@@ -4,10 +4,10 @@ import { useRouteLoaderData } from 'react-router-dom';
 
 function EditStudentPage(){
 	const data = useRouteLoaderData('student-detail');
-	console.log(data);
+	console.log(data.responseBody);
 	return (
 		<>
-	<NewStudentForm studentDetails = {data}/>
+	<NewStudentForm studentDetails = {data.responseBody}/>
 	</>
 	)
 }

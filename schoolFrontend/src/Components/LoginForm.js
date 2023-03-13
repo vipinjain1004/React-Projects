@@ -69,8 +69,6 @@ function LoginForm() {
 }
 export default LoginForm;
 export async function action({ request, params }) {
-
-
 	const data = await request.formData();
 	const userName = data.get('user_name');
 	const pwd = data.get('pwd');

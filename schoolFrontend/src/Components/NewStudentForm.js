@@ -7,18 +7,47 @@ import ClassSelectBox from './ClassSelectBox';
 
 
 function NewStudentForm({ method, studentDetails }) {
-	var responseData = useActionData();
+	const response = useActionData();
+	const responseData = response === undefined ? undefined : response.responseBody;
 	const [editStudentModeShow, setEditStudentModeShow] = useState(false);
 	const [buttonStateOnClick, setButtonStateOnClick] = useState('NotClicked');
 	const [classValue, setClassValue] = useState('');
 	const [loading, setLoading] = useState(false);
+	const [isValidate, setIsValidate] = useState(false);
+	const [fName, setFName] = useState();
+	const [fatherName, setFaterName] = useState();
+	const [dob, setDOB] = useState();
+	const [buttonEnabled, setButtonEnabled] = useState(studentDetails === undefined ? false : true);
+
 	useEffect(() => {
 		if (!editStudentModeShow && (buttonStateOnClick === 'Create' || buttonStateOnClick === 'Update')) {
 			setEditStudentModeShow(true);
 		}
 		setLoading(false);
-	}, [responseData])
+	}, [responseData]);
 
+
+	useEffect(() => {
+		console.log('Form data use Effect ' + fName + fatherName + dob + buttonEnabled);
+		if (fName && fatherName && dob) {
+			console.log('Inside COndition Form data use Effect ' + fName + fatherName + dob + buttonEnabled);
+			setButtonEnabled(true);
+		}
+		if (!fatherName) {
+			setButtonEnabled(false);
+		}
+
+	}, [fName, fatherName, dob, buttonEnabled]);
+
+	const validateName = (event) => {
+		setFName(event.target.value);
+	}
+	const validateFatherName = (event) => {
+		setFaterName(event.target.value);
+	}
+	const validateDOB = (event) => {
+		setDOB(event.target.value);
+	}
 	const onHideEditModel = () => {
 		setEditStudentModeShow(false);
 		return redirect('/');
@@ -27,21 +56,38 @@ function NewStudentForm({ method, studentDetails }) {
 	var date = new Date();
 	if (studentDetails === undefined) {
 		studentDetails = false;
+
 	} else {
 		const parsedDate = new Date(studentDetails.dateOfBirth);
 		date = parsedDate.toISOString().substring(0, 10);
+
 	}
+	useEffect(() => {
+		if (studentDetails === undefined) {
+
+		} else {
+			setFName(studentDetails.fName);
+			setFaterName(studentDetails.fatherName);
+			setDOB(studentDetails.dateOfBirth);
+			
+		}
+	}, []);
 	const getClassValue = (value) => {
 		setClassValue(value);
 	}
+
 	const navigate = useNavigate();
 	function cancelHandler() {
 		navigate('..');
 	}
 	const buttonClicked = () => {
 		var state = studentDetails ? 'Update' : 'Create';
-		setButtonStateOnClick(state);
-		setLoading(true);
+		if (buttonEnabled && fName && fatherName && dob) {
+			setButtonStateOnClick(state);
+			setLoading(true);
+		}
+
+
 	}
 	return (
 		<>
@@ -57,9 +103,16 @@ function NewStudentForm({ method, studentDetails }) {
 								<label htmlFor="first_name">First Name</label>
 								<input type="text" id="first_name" name="fName"
 									defaultValue={studentDetails ? studentDetails.fName : ''}
-									id="inputEmail4"
 									disabled={studentDetails ? "disabled" : ""}
-									placeholder="First Name" className={`form-control ${studentDetails ? 'disabled' : ''} `} />
+									placeholder="First Name" className={`form-control ${!fName ? 'is-invalid': 'is-valid' } `}
+									aria-describedby="inputGroupPrepend3 validationServerUsernameFeedback"
+									onBlur={validateName}
+									required />
+								{!fName &&
+									<div class="invalid-feedback">
+										Please Enter Name
+									  </div>
+								}
 							</div>
 
 							<div class="form-group col ">
@@ -81,29 +134,37 @@ function NewStudentForm({ method, studentDetails }) {
 							<label htmlFor="f_f_Name">Father Name</label>
 							<input type="text" id="f_f_Name" name="fatherName"
 								defaultValue={studentDetails ? studentDetails.fatherName : ''}
-								class="form-control" placeholder="Father Name" />
+								className={`form-control ${fatherName ? 'is-valid' : 'is-invalid'}`} placeholder="Father Name" onBlur={validateFatherName} required />
+							{!fatherName &&
+								<div class="invalid-feedback">
+									Please Enter Father's Name
+								</div>
+							}
 						</div>
 						<div className="row">
 							<div class="form-group col-md-2">
 								<label htmlFor="dob">Date of Birth</label>
 								<input type="Date" id="dob" name="dateOfBirth"
 									defaultValue={studentDetails ? date : ''}
-									className={`form-control`} disabled={studentDetails ? "disabled" : ""} />
+									className={`form-control ${dob ? 'is-valid' : 'is-invalid'}`} disabled={studentDetails ? "disabled" : ""} onBlur={validateDOB} required />
+								{!dob && <div class="invalid-feedback">
+									Please Enter Valid Date
+    </div>}
 							</div>
 							<div class="form-group col-md-2">
 								<label htmlFor="dob">Class</label>
-								<ClassSelectBox getValue={getClassValue} defaultValue={studentDetails ? studentDetails.stdClass : ''} />
+								<ClassSelectBox getValue={getClassValue} defaultValue={studentDetails ? studentDetails.stdClass : ''} required />
 							</div>
 						</div>
-						
-						<p><button class="btn btn-outline-primary" onClick={buttonClicked}>{studentDetails ? 'Update' : 'Create'}</button>
+
+						<p><button className={`btn btn-outline-primary ${buttonEnabled ? '' : 'disabled'}`} onClick={buttonClicked}>{studentDetails ? 'Update' : 'Create'}</button>
 							<button type="button" style={{ 'padding-left': '2.5rem', 'padding-right': '2.5rem', margin: '2rem' }} class="btn btn-outline-secondary" onClick={cancelHandler}>Cancel</button>
 							{loading &&
-							<div class="spinner-grow text-primary" role="status">
-								<span class="visually-hidden">Loading...</span>
-							</div>
-						}						
-						</p>			
+								<div class="spinner-grow text-primary" role="status">
+									<span class="visually-hidden">Loading...</span>
+								</div>
+							}
+						</p>
 
 					</div>
 				</Form>

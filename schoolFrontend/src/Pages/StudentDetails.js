@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useParams, Link, useRouteLoaderData, Form, useNavigate } from 'react-router-dom';
 import GenericModel from '../Components/Model/GenericModel';
 function StudentDetailsPage() {
-	const studentDetails = useRouteLoaderData('student-detail');
+	const studentDetailsResonse = useRouteLoaderData('student-detail');
+	const studentDetails = studentDetailsResonse.responseBody;
 	const params = useParams();
 	const navigate = useNavigate();
 	const [showGenericModel, setShowGenericModel] = useState(false);
@@ -10,19 +11,15 @@ function StudentDetailsPage() {
 	const deleteBtnOnClick = () => {
 		setShowGenericModel(true);
 	}
-
-	const actionOnClickGenericModel = async () => {
-		setShowGenericModel(false);
+	const actionOnClickGenericModel = async () => {	
 		const url = '/student/' + params.studentId + '/delete';
-		console.log('Delete URL ' + url);
 		const response = await fetch(url, {
 			method: 'delete'
 		});
-		console.log('DAta on submit action' + JSON.stringify(response));
 		if (!response.ok) {
-			console.log('Data coud not be fetched!');
 			throw new Error('Data coud not be fetched!')
 		} else {
+			setShowGenericModel(false);
 			navigate('/students');
 		}
 	}
@@ -37,11 +34,9 @@ function StudentDetailsPage() {
 				<p className="card-text">Name : {studentDetails.fName}</p>
 
 			</div>
-			<div class="card-footer">
-	
+			<div class="card-footer">	
 					<Link to="edit"><button className='btn btn-outline-success'>Edit</button>	</Link>
-					<button class="btn btn btn-outline-danger" onClick={deleteBtnOnClick} >Delete</button>
-		
+					<button class="btn btn btn-outline-danger" onClick={deleteBtnOnClick} >Delete</button>		
 			</div>
 		</div>
 
