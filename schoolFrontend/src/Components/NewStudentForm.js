@@ -3,7 +3,7 @@ import { Form, useActionData, redirect } from "react-router-dom";
 import { useNavigate } from "react-router";
 import EditStudentDetails from './Model/EditStudentDetails';
 import ClassSelectBox from './ClassSelectBox';
-
+import Alert from 'react-bootstrap/Alert';
 
 
 function NewStudentForm({ method, studentDetails }) {
@@ -18,35 +18,47 @@ function NewStudentForm({ method, studentDetails }) {
 	const [fatherName, setFaterName] = useState();
 	const [dob, setDOB] = useState();
 	const [buttonEnabled, setButtonEnabled] = useState(studentDetails === undefined ? false : true);
+	const [intialFName, setInitialFirstName] = useState(studentDetails === undefined ? false : true);
+	const [intialFatherName, setInitialFatherName] = useState(studentDetails === undefined ? false : true);
+	const [intialDob, setInitialDob] = useState(studentDetails === undefined ? false : true);
+	const [serverError, setServerError] = useState({});
 
 	useEffect(() => {
-		if (!editStudentModeShow && (buttonStateOnClick === 'Create' || buttonStateOnClick === 'Update')) {
+		if (responseData != undefined && !editStudentModeShow && (buttonStateOnClick === 'Create' || buttonStateOnClick === 'Update')) {
 			setEditStudentModeShow(true);
 		}
 		setLoading(false);
-	}, [responseData]);
+		if (response != undefined && response.responseMetaData != undefined &&
+			response.responseMetaData.errorDetails != undefined &&
+			response.responseMetaData.errorDetails.errorCode != 200) {
+			setServerError({
+				message: response.responseMetaData.errorDetails.clientMessage,
+				code: response.responseMetaData.errorDetails.errorCode
+			});
+		}
+	}, [responseData, response]);
 
 
 	useEffect(() => {
-		console.log('Form data use Effect ' + fName + fatherName + dob + buttonEnabled);
 		if (fName && fatherName && dob) {
-			console.log('Inside COndition Form data use Effect ' + fName + fatherName + dob + buttonEnabled);
 			setButtonEnabled(true);
 		}
 		if (!fatherName) {
 			setButtonEnabled(false);
 		}
-
 	}, [fName, fatherName, dob, buttonEnabled]);
 
 	const validateName = (event) => {
 		setFName(event.target.value);
+		setInitialFirstName(true);
 	}
 	const validateFatherName = (event) => {
 		setFaterName(event.target.value);
+		setButtonStateOnClick(true);
 	}
 	const validateDOB = (event) => {
 		setDOB(event.target.value);
+		setInitialDob(true);
 	}
 	const onHideEditModel = () => {
 		setEditStudentModeShow(false);
@@ -63,13 +75,11 @@ function NewStudentForm({ method, studentDetails }) {
 
 	}
 	useEffect(() => {
-		if (studentDetails === undefined) {
-
-		} else {
+		if (studentDetails != undefined) {
 			setFName(studentDetails.fName);
 			setFaterName(studentDetails.fatherName);
 			setDOB(studentDetails.dateOfBirth);
-			
+			setServerError({});
 		}
 	}, []);
 	const getClassValue = (value) => {
@@ -86,8 +96,6 @@ function NewStudentForm({ method, studentDetails }) {
 			setButtonStateOnClick(state);
 			setLoading(true);
 		}
-
-
 	}
 	return (
 		<>
@@ -96,15 +104,22 @@ function NewStudentForm({ method, studentDetails }) {
 				<h3> {studentDetails ? 'Student Details for   ' + studentDetails.id : 'Admission Form'} </h3>
 			</div>
 			<div class="card-body">
+				{Object.keys(serverError).length != 0 &&
+					<Alert key="danger" variant="danger">
+						{serverError.message}
+					</Alert>}
+
 				<Form method="POST" >
 					<div class="form-row">
 						<div class="row">
 							<div class="form-group  col-6" style={{ "width": "51%" }}>
-								<label htmlFor="first_name">First Name</label>
-								<input type="text" id="first_name" name="fName"
+								<label htmlFor="fName">First Name</label>
+								<input type="text" id="fName"
+									name="fName"
 									defaultValue={studentDetails ? studentDetails.fName : ''}
-									disabled={studentDetails ? "disabled" : ""}
-									placeholder="First Name" className={`form-control ${!fName ? 'is-invalid': 'is-valid' } `}
+									readOnly={studentDetails ? true : false}
+									placeholder="First Name"
+									className={`form-control  ${!intialFName ? '' : !fName ? 'is-invalid' : 'is-valid'} `}
 									aria-describedby="inputGroupPrepend3 validationServerUsernameFeedback"
 									onBlur={validateName}
 									required />
@@ -134,7 +149,8 @@ function NewStudentForm({ method, studentDetails }) {
 							<label htmlFor="f_f_Name">Father Name</label>
 							<input type="text" id="f_f_Name" name="fatherName"
 								defaultValue={studentDetails ? studentDetails.fatherName : ''}
-								className={`form-control ${fatherName ? 'is-valid' : 'is-invalid'}`} placeholder="Father Name" onBlur={validateFatherName} required />
+								className={`form-control ${!intialFatherName ? '' : fatherName ? 'is-valid' : 'is-invalid'}`}
+								placeholder="Father Name" onBlur={validateFatherName} required />
 							{!fatherName &&
 								<div class="invalid-feedback">
 									Please Enter Father's Name
@@ -146,14 +162,18 @@ function NewStudentForm({ method, studentDetails }) {
 								<label htmlFor="dob">Date of Birth</label>
 								<input type="Date" id="dob" name="dateOfBirth"
 									defaultValue={studentDetails ? date : ''}
-									className={`form-control ${dob ? 'is-valid' : 'is-invalid'}`} disabled={studentDetails ? "disabled" : ""} onBlur={validateDOB} required />
+									className={`form-control ${!intialDob ? '' : dob ? 'is-valid' : 'is-invalid'}`}
+									readOnly={studentDetails ? true : false}
+									onBlur={validateDOB} required />
 								{!dob && <div class="invalid-feedback">
 									Please Enter Valid Date
     </div>}
 							</div>
 							<div class="form-group col-md-2">
 								<label htmlFor="dob">Class</label>
-								<ClassSelectBox getValue={getClassValue} defaultValue={studentDetails ? studentDetails.stdClass : ''} required />
+								<ClassSelectBox getValue={getClassValue}
+									defaultValue={studentDetails ? studentDetails.stdClass : ''}
+									required />
 							</div>
 						</div>
 

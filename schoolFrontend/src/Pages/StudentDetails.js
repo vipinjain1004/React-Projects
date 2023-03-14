@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { useParams, Link, useRouteLoaderData, Form, useNavigate } from 'react-router-dom';
 import GenericModel from '../Components/Model/GenericModel';
+import Alert from 'react-bootstrap/Alert';
+
 function StudentDetailsPage() {
 	const studentDetailsResonse = useRouteLoaderData('student-detail');
 	const studentDetails = studentDetailsResonse.responseBody;
 	const params = useParams();
 	const navigate = useNavigate();
 	const [showGenericModel, setShowGenericModel] = useState(false);
+	const [isDeleted, setIsDeleted] = useState(false);
 
 	const deleteBtnOnClick = () => {
 		setShowGenericModel(true);
@@ -19,12 +22,16 @@ function StudentDetailsPage() {
 		if (!response.ok) {
 			throw new Error('Data coud not be fetched!')
 		} else {
+			setIsDeleted(true);
 			setShowGenericModel(false);
 			navigate('/students');
 		}
 	}
 	return (
 		<>
+		{isDeleted && <Alert key="success" variant="success">
+         Successfully Deleted 
+        </Alert>}
 		<div className="card text-center">
 			<div className="card-header">
 				Student Details Page
