@@ -1,14 +1,22 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import NewStudentForm from '../Components/NewStudentForm';
-import { useRouteLoaderData } from 'react-router-dom';
+import { useRouteLoaderData, Await } from 'react-router-dom';
 
-function EditStudentPage(){
-	const data = useRouteLoaderData('student-detail');
-	console.log(data.responseBody);
+function EditStudentPage() {
+	const { studentDetails } = useRouteLoaderData('student-detail');
+	console.log({ studentDetails });
 	return (
-		<>
-	<NewStudentForm studentDetails = {data.responseBody}/>
-	</>
+		<Suspense fallback={<div class="spinner-grow text-primary" style={{ "text-align": "center" }} role="status">
+			<span class="visually-hidden">Loading...</span>
+		</div>}>
+			<Await resolve={studentDetails}>
+				{(loadedStudentData) => <>
+					<NewStudentForm studentDetails={loadedStudentData} />
+
+					</>}
+			</Await>
+		</Suspense>
+
 	)
 }
 export default EditStudentPage;

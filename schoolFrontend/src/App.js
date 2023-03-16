@@ -13,6 +13,9 @@ import { action as loginAction } from './Components/LoginForm';
 import { action as logoutAction } from './Components/logout';
 import { tokenLoader, checkAuthLoader } from './utils/LoginUtils';
 import {action as deleteAction} from './Components/DeleteStudent';
+import ErrorPage from './Pages/ErrorPage';
+import PageNotFound from './Pages/PageNotFound';
+import { action as fetchStudentsList} from './Components/FetchStudentList';
 
 const router = createBrowserRouter([
 	{
@@ -20,13 +23,17 @@ const router = createBrowserRouter([
 		element: <RootLayout />,
 		id: 'root',
 		loader: tokenLoader,
+
 		children: [
 			{ index: true, path: '', element: <HomePage /> },
 			{ path: 'login', element: <LoginPage />, action: loginAction },
+			{path :'*', element :<PageNotFound/>},
 			{ path: 'logout', action: logoutAction },
+			{ path: 'fetchStudentsList', action: fetchStudentsList },
 			{
 				path: 'students',
 				element: <StudentRootLayout />,
+				errorElement :<ErrorPage/>,
 				children: [
 					{
 						index: true,
@@ -45,6 +52,7 @@ const router = createBrowserRouter([
 						path: ':studentId',
 						id: 'student-detail',
 						loader: studentLoaderData,
+						errorElement :<ErrorPage/>,
 						children: [
 							{
 								index: true,

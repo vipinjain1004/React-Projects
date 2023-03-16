@@ -1,55 +1,85 @@
-import React from 'react';
-import { Link, useRouteLoaderData } from 'react-router-dom';
+import React, { Suspense, json, useState } from 'react';
+import { Link, useRouteLoaderData, defer, Await, useFetcher, useSubmit } from 'react-router-dom';
+
+import StudentFilterForm from '../Components/StudentFilterForm';
 
 function StudentPage() {
-	const data = useRouteLoaderData('all-student-detail');
+	const  {allStudentDetails} = useRouteLoaderData('all-student-detail');
+	const [responseData, setResponseData] = useState({});
+	const [isShowTable, setIsShowTable] = useState(false);
+	const [isLoading, setIsLoading] = useState(true);
+
+ 
+	const onChangeResponse = async (data)=>{
+		setIsShowTable(true);
+		setResponseData(data);	
+		setIsLoading(false);
+		console.log("Response insdie student.js in onchangeResonse"+ JSON.stringify(data));
+	}
+	const onClickOnFilterButton = ()=>{
+		setIsLoading(true);
+	}
+	
 	var count = 1;
-	console.log("student detials for student.js" +data);
-	//const data1 = JSON.parse(data);
 	return (
-		<><h1>Student  Page</h1>
-		{data.length === 0 && <p>No Data Found</p>}
+		<>
+		<StudentFilterForm onChangeResponse ={onChangeResponse} onClickOnFilterButton ={onClickOnFilterButton} /> 
+		{isLoading && <div class="spinner-grow text-primary" role="status">
+									<span class="visually-hidden">Loading...</span>
+								</div>}
+		{!isLoading && 
 		<table class="table table-striped">
-			<thead>			
-				<tr>
-					<th scope="col">#</th>
-					<th scope="col">Name</th>
-					<th scope="col">Father Name</th>
-					<th scope="col">Dob</th>
-					<th scope="col">Class</th>
-					<th scope="col">Details</th>
-				</tr>
-			</thead>
-			<tbody>				
-				{data.responseBody.map(student =>						
-					<tr key={student.id}>
+		<thead>
+			<tr>
+				<th scope="col">#</th>
+				<th scope="col">Name</th>
+				<th scope="col">Father Name</th>
+				<th scope="col">Dob</th>
+				<th scope="col">Class</th>
+				<th scope="col">Details</th>
+			</tr>
+		</thead>
+		<tbody>
+			{responseData.length === 0 ? 'No Data found' : ''}
+			{responseData.map(student =>
+				<tr key={student.id}>
 					<th scope="row">{count++}</th>
-					<td>{student.fName===null ? ' ' : student.fName + ' ' } {student.mName === null ? ' ': student.mName + ' '  }
-					{  student.lName === null ? ' ':  student.lName }</td>
+					<td>{student.fName === null ? ' ' : student.fName + ' '} {student.mName === null ? ' ' : student.mName + ' '}
+						{student.lName === null ? ' ' : student.lName}</td>
 					<td>{student.fatherName}</td>
 					<td>{student.dateOfBirth}</td>
 					<td>{student.stdClass}</td>
 					<td><Link to={student.id}>Details</Link></td>
 				</tr>)
-				}
-			</tbody>
-		</table>
-		</>
+			}
+		</tbody>
+	</table>}
+	</>
 	)
 }
 export default StudentPage;
 
-export async function loader({ request, params }) {
-		const response = await fetch('/student/getAll', {  // Enter your IP address here
-			method: 'GET', 	
-			// body data type must match "Content-Type" header
-		  });	
-		if (!response.ok) {
-			console.log('Data coud not be fetched!');
-		  throw new Error('Data coud not be fetched!')
-		} else {
-			console.log(response);
-		  return response;
-		}	  
-	  return null;
+async function getAllDetails() {
+	const response = await fetch('/student/getAll', {
+		method: 'GET',
+		// body data type must match "Content-Type" header
+	});
+	if (!response.ok && response.status != 500) {
+		console.log('Data coud not be fetched!');
+		throw new Response(JSON.stringify({message : response.message}), {status : response.status });
+	} else 	if (!response.ok && response.status === 500) {
+		console.log('Data coud not be fetched!');
+		throw new Response(JSON.stringify({message : 'Something went wrong'}), {status : 500 });
+	} else {
+		console.log(response);
+		const resdata = await response.json();
+		return resdata.responseBody;
+	}
+	return null;
+};
+export function loader({ request, params }) {
+	return defer({
+		allStudentDetails: getAllDetails()
+	})
+
 };

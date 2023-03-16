@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 
 function ClassSelectBox(props) {
-
     const onChange = (event) => {
         const value = event.target.value;
         props.getValue(value);
@@ -12,8 +11,7 @@ function ClassSelectBox(props) {
     return (
         <>
         <Form.Select aria-label="Default select example"
-            onChange={onChange} name='stdClass'
-            defaultValue={props.defaultValue} >
+            onChange={onChange} name='stdClass' defaultValue = {props.defaultValue}>
             <option value="" >Select Class</option>
             <option value="LKG">LKG</option>
             <option value="UKG">UKG</option>

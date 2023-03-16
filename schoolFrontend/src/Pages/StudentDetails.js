@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
-import { useParams, Link, useRouteLoaderData, Form, useNavigate } from 'react-router-dom';
+import React, { useState,  Suspense, json } from 'react';
+import { useParams, Link, useRouteLoaderData, Form, useNavigate, Await, defer } from 'react-router-dom';
 import GenericModel from '../Components/Model/GenericModel';
 import Alert from 'react-bootstrap/Alert';
 
 function StudentDetailsPage() {
-	const studentDetailsResonse = useRouteLoaderData('student-detail');
-	const studentDetails = studentDetailsResonse.responseBody;
+	const { studentDetails } = useRouteLoaderData('student-detail');
 	const params = useParams();
 	const navigate = useNavigate();
 	const [showGenericModel, setShowGenericModel] = useState(false);
@@ -14,7 +13,7 @@ function StudentDetailsPage() {
 	const deleteBtnOnClick = () => {
 		setShowGenericModel(true);
 	}
-	const actionOnClickGenericModel = async () => {	
+	const actionOnClickGenericModel = async () => {
 		const url = '/student/' + params.studentId + '/delete';
 		const response = await fetch(url, {
 			method: 'delete'
@@ -28,56 +27,71 @@ function StudentDetailsPage() {
 		}
 	}
 	return (
-		<>
-		{isDeleted && <Alert key="success" variant="success">
-         Successfully Deleted 
+		<Suspense fallback={<div class="spinner-grow text-primary" style={{"text-align":"center"}} role="status">
+		<span class="visually-hidden">Loading...</span>
+	</div> }>
+		<Await resolve={studentDetails}>
+			{(loadedStudentData) => <>
+				{isDeleted && <Alert key="success" variant="success">
+					Successfully Deleted
         </Alert>}
-		<div className="card text-center">
-			<div className="card-header">
-				Student Details Page
+				<div className="card text-center">
+					<div className="card-header">
+						Student Details Page
   </div>
-			<div className="card-body">
-				<h5 className="card-title">Student Id : {params.studentId}</h5>
-				<p className="card-text">Name : {studentDetails.fName}</p>
+					<div className="card-body">
+						<h5 className="card-title">Student Id : {params.studentId}</h5>
+						<p className="card-text">Name : {loadedStudentData.fName}</p>
 
-			</div>
-			<div class="card-footer">	
-					<Link to="edit"><button className='btn btn-outline-success'>Edit</button>	</Link>
-					<button class="btn btn btn-outline-danger" onClick={deleteBtnOnClick} >Delete</button>		
-			</div>
-		</div>
+					</div>
+					<div class="card-footer">
+						<Link  to='edit' state={{...loadedStudentData}}><button className='btn btn-outline-success'>Edit</button>	</Link>
+						<button class="btn btn btn-outline-danger" onClick={deleteBtnOnClick} >Delete</button>
+					</div>
+				</div>
+				<GenericModel
+					title="Delete"
+					body='Are you sure you want to delete this ?'
+					successButton='Delete'
+					cancelButton='Cancel'
+					actionOnClick={actionOnClickGenericModel}
+					show={showGenericModel}
+					onHide={() => setShowGenericModel(false)}
+				/>
 
+				</>}
+		</Await>
+		</Suspense>
 
-		<GenericModel
-			title="Delete"
-			body='Are you sure you want to delete this ?'
-			successButton='Delete'
-			cancelButton='Cancel'
-			actionOnClick={actionOnClickGenericModel}
-			show={showGenericModel}
-			onHide={() => setShowGenericModel(false)}
-		/>
-
-		</>
 	)
 }
 export default StudentDetailsPage;
 
-export async function loader({ request, params }) {
-	const studentId = params.studentId;
+async function loadStudentDetail(studentId) {
 	const url = '/student/' + studentId + '/get';
 	const response = await fetch(url, {  // Enter your IP address here
 		method: 'GET',
 		// body data type must match "Content-Type" header
 	});
 
-	if (!response.ok) {
+	if (!response.ok && response.status ==! 500) {
 		console.log('Data coud not be fetched!');
-		throw new Error('Data coud not be fetched!')
+		throw new Response(JSON.stringify({message : response.message}), {status : response.status });
+	} else 	if (!response.ok && response.status != 500) {
+		console.log('Data coud not be fetched!');
+		throw new Response(JSON.stringify({message : 'Something went wrong'}), {status : 500 });
 	} else {
 		console.log(response);
-		return response;
+		const resData = await response.json();
+		return resData.responseBody;
 	}
 	return null;
+};
+
+export function loader({ request, params }) {
+	const studentId = params.studentId;
+	return defer({
+		studentDetails: loadStudentDetail(studentId)
+	})
 
 };
