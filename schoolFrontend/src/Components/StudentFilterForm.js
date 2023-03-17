@@ -4,12 +4,15 @@ import { useFetcher, useSubmit } from 'react-router-dom';
 function StudentFilterForm(props) {
     const submit = useSubmit();
     const [classValue, setClassValue] = useState('');
+    const [enterFName, setEnterFName] = useState('');    
     const fetcher = useFetcher();
     let allStudentDetails = {};
+    const onChangeFName = (event)=> {
+        setEnterFName(event.target.value);    }
+  
     useEffect(() => {
-        fetcher.submit(null, { method: "post", action: "/fetchStudentsList" });
-
-    }, []);
+        fetcher.submit({fName : enterFName, stdClass : classValue, limit:props.limit, offset:props.offset}, { method: "post", action: "/fetchStudentsList" });        
+    }, [props.offset, props.limit]);
 
     const getClassValue = (value) => {
         setClassValue(value);
@@ -26,18 +29,19 @@ function StudentFilterForm(props) {
         }
     }, [data, state]);
 
+
     return (
         <>
         <div class="card " style={{ margin: '2rem' }}>
 
             <div class="card-body">
-                <fetcher.Form method="POST" action='/fetchStudentsList'  >
+                <fetcher.Form method="POST" action='/fetchStudentsList'   >
                     <div class="form-row">
                         <div class="row">
                             <div class="form-group col ">
                                 <label htmlFor="fName">Name</label>
                                 <input type="text" id="fName" name="fName"
-                                    class="form-control" placeholder="Name" />
+                                    class="form-control" placeholder="Name" onChange={onChangeFName} />
                             </div>
 
                             <div class="form-group  col">
