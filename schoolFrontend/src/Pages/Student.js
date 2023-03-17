@@ -11,6 +11,7 @@ function StudentPage() {
 	const [isLoading, setIsLoading] = useState(true);
 	const [limit, setLimit] = useState(10);
 	const [offset, setOffset] = useState(0);
+	const [activePage, setActivePage] = useState(1);
 	//	const [count, setCount] = useState(1);
 	let count = 1
 
@@ -23,6 +24,7 @@ function StudentPage() {
 	}
 	const onClickOnFilterButton = () => {
 		setIsLoading(true);
+		setActivePage(1);
 	}
 
 	const onClickPageNumber = (limit, offset) => {
@@ -69,7 +71,7 @@ function StudentPage() {
 					}
 				</tbody>
 			</table>}
-		{responseData.pagination && responseData.pagination.length !== 0 && <PaginationStudentList pageInfo={responseData.pagination} onClickPageNumber={onClickPageNumber} />}
+		{responseData.pagination && responseData.pagination.length !== 0 && <PaginationStudentList pageInfo={responseData.pagination} activePageCount = {activePage} onClickPageNumber={onClickPageNumber} />}
 		<br />
 		<br />
 

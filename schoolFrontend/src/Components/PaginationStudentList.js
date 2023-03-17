@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useState, useEffect} from 'react';
 import Pagination from 'react-bootstrap/Pagination';
 
 
@@ -6,7 +6,7 @@ import Pagination from 'react-bootstrap/Pagination';
 function PaginationStudentList(props) {
     const [active, setActive] = useState(1);
     let items = [];
-    console.log("Props value inside pagination List " + JSON.stringify(props));
+   // console.log("Props value inside pagination List " + JSON.stringify(props));
     const totalCount = props.pageInfo.total;
     const limit = props.pageInfo.limit;
     const offset = props.pageInfo.offset;
@@ -23,7 +23,13 @@ function PaginationStudentList(props) {
         //console.log("On Click Page " + JSON.stringify(event));
 
     }
+    useEffect(() => {
+        if(offset === 0){
+            setActive(1);
+        }
+    }, [offset]);
     
+   
     for (let number = 1; number <= totalPage; number++) {
         items.push(
             <Pagination.Item key={number} active={number === active} onClick={()=>{
