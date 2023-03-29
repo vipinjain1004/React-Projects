@@ -3,6 +3,7 @@ import { useParams, Link, useRouteLoaderData, Form, useNavigate, Await, defer } 
 import GenericModel from '../Components/Model/GenericModel';
 import Alert from 'react-bootstrap/Alert';
 import PaginationStudentList from '../Components/PaginationStudentList';
+import StudentDetails from '../Components/StudentDetails';
 
 function StudentDetailsPage() {
 	const { studentDetails } = useRouteLoaderData('student-detail');
@@ -37,6 +38,7 @@ function StudentDetailsPage() {
 						Successfully Deleted
 			</Alert>
 					}
+					<StudentDetails studentDetail = {loadedStudentData}/>
 					<div className="card text-center">
 						<div className="card-header">
 							Student Details Page

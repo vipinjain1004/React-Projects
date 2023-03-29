@@ -16,6 +16,8 @@ import {action as deleteAction} from './Components/DeleteStudent';
 import ErrorPage from './Pages/ErrorPage';
 import PageNotFound from './Pages/PageNotFound';
 import { action as fetchStudentsList} from './Components/FetchStudentList';
+import FeesForm from './Components/FeesForm';
+import FeesDetails from './Pages/FeesDetails';
 
 const router = createBrowserRouter([
 	{
@@ -47,7 +49,7 @@ const router = createBrowserRouter([
 						action: newEventAction,
 						loader: checkAuthLoader
 					},
-
+					
 					{
 						path: ':studentId',
 						id: 'student-detail',
@@ -57,6 +59,11 @@ const router = createBrowserRouter([
 							{
 								index: true,
 								element: <StudentDetailsPage />,
+								loader: checkAuthLoader
+							},
+							{
+								path: 'fees',
+								element: <FeesDetails />,						
 								loader: checkAuthLoader
 							},
 							{

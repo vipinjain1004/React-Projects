@@ -20,8 +20,7 @@ function StudentFilterForm(props) {
     const { data, state } = fetcher;
 
     useEffect(() => {
-        if (state === 'idle' && data) {
-            console.log("Data inside StudentFilterForm using fatcher" + JSON.stringify(data));
+        if (state === 'idle' && data) {           
             props.onChangeResponse(data);
         }
         if (state === 'submitting') {

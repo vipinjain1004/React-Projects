@@ -8,11 +8,11 @@ function RootLayout() {
 	const token = useLoaderData();
 	const submit = useSubmit();
 
-	useEffect(() => {
-		if (!token) {
+	useEffect(() => {		
+		if (!token.auth) {
 			return;
 		}
-		if (token === 'EXPIRED') {
+		if (token.auth === 'EXPIRED') {
 			submit(null, { action: '/logout', method: 'post' });
 			return;
 		}
