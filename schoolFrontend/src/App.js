@@ -12,12 +12,14 @@ import LoginPage from './Pages/Login';
 import { action as loginAction } from './Components/LoginForm';
 import { action as logoutAction } from './Components/logout';
 import { tokenLoader, checkAuthLoader } from './utils/LoginUtils';
-import {action as deleteAction} from './Components/DeleteStudent';
+import { action as deleteAction } from './Components/DeleteStudent';
 import ErrorPage from './Pages/ErrorPage';
 import PageNotFound from './Pages/PageNotFound';
-import { action as fetchStudentsList} from './Components/FetchStudentList';
-import FeesForm from './Components/FeesForm';
+import { action as fetchStudentsList } from './Components/FetchStudentList';
+import FeesForm, { action as submitFeesDetails } from './Components/FeesForm';
 import FeesDetails from './Pages/FeesDetails';
+import {action as getFeesDetailsLoader} from './Components/Response/StudentFeesDetails';
+
 
 const router = createBrowserRouter([
 	{
@@ -29,13 +31,21 @@ const router = createBrowserRouter([
 		children: [
 			{ index: true, path: '', element: <HomePage /> },
 			{ path: 'login', element: <LoginPage />, action: loginAction },
-			{path :'*', element :<PageNotFound/>},
+			{ path: '*', element: <PageNotFound /> },
 			{ path: 'logout', action: logoutAction },
 			{ path: 'fetchStudentsList', action: fetchStudentsList },
 			{
+				path: 'submitFeesDetails',
+				action: submitFeesDetails
+			},
+			{
+				path: 'getFeesDetails',
+				action: getFeesDetailsLoader
+			},
+			{
 				path: 'students',
 				element: <StudentRootLayout />,
-				errorElement :<ErrorPage/>,
+				errorElement: <ErrorPage />,
 				children: [
 					{
 						index: true,
@@ -49,12 +59,12 @@ const router = createBrowserRouter([
 						action: newEventAction,
 						loader: checkAuthLoader
 					},
-					
+
 					{
 						path: ':studentId',
 						id: 'student-detail',
 						loader: studentLoaderData,
-						errorElement :<ErrorPage/>,
+						errorElement: <ErrorPage />,
 						children: [
 							{
 								index: true,
@@ -63,7 +73,7 @@ const router = createBrowserRouter([
 							},
 							{
 								path: 'fees',
-								element: <FeesDetails />,						
+								element: <FeesDetails />,
 								loader: checkAuthLoader
 							},
 							{

@@ -53,7 +53,8 @@ function StudentPage() {
 						<th scope="col">Father Name</th>
 						<th scope="col">Dob</th>
 						<th scope="col">Class</th>
-						<th scope="col">Details</th>
+						<th scope="col"></th>
+						<th scope="col"></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -66,7 +67,9 @@ function StudentPage() {
 							<td>{student.fatherName}</td>
 							<td>{student.dateOfBirth}</td>
 							<td>{student.stdClass}</td>
-							<td><Link to={student.id}>Details</Link></td>
+							<td><Link to={student.id+'/fees'}>Fees</Link></td>
+							<td><Link to={student.id}>Detaiils</Link></td>
+							
 						</tr>)
 					}
 				</tbody>

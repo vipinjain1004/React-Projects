@@ -28,6 +28,9 @@ function StudentDetailsPage() {
 			navigate('/students');
 		}
 	}
+	const getValue = (stu)=>{
+		
+	}
 	return (
 		<Suspense fallback={<div class="spinner-grow text-primary" style={{ "text-align": "center" }} role="status">
 			<span class="visually-hidden">Loading...</span>
@@ -38,7 +41,7 @@ function StudentDetailsPage() {
 						Successfully Deleted
 			</Alert>
 					}
-					<StudentDetails studentDetail = {loadedStudentData}/>
+					<StudentDetails getValue ={getValue}/>
 					<div className="card text-center">
 						<div className="card-header">
 							Student Details Page
@@ -49,6 +52,7 @@ function StudentDetailsPage() {
 
 						</div>
 						<div class="card-footer">
+							<Link to='fees' ><button className='btn btn-outline-primary'>Fees</button>	</Link>
 							<Link to='edit' state={{ ...loadedStudentData }}><button className='btn btn-outline-success'>Edit</button>	</Link>
 							<button class="btn btn btn-outline-danger" onClick={deleteBtnOnClick} >Delete</button>
 						</div>
