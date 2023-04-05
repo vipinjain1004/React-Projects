@@ -29,11 +29,11 @@ function FeesSubmitModel(props) {
                             <br/>
                             <span>
                                 <span>Class : {props.responseBody.stdClass}</span>
-                                <span style={{ float: "right" }}> Date : {props.responseBody.feesDetails[0].dt} </span>
+                                <span style={{ float: "right" }}> Date : {props.responseBody.createdDate.split(' ')[0]} </span>
                             </span>
                             <br/>
                             <span>
-                                <span> Receipt No : {props.responseBody.hardCopyReceiptNo} </span>
+                                <span> Receipt No : {props.responseBody.hardCopyNo} </span>
                                 <span style={{ float: "right" }}></span>
                             </span>
                         </div>
@@ -42,15 +42,13 @@ function FeesSubmitModel(props) {
                                 <tr>
                                     <th scope="col">Month</th>
                                     <th scope="col">Amount</th>
-                                    <th scope="col">Date</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {props.responseBody.feesDetails.map(item =>
                                     <tr key={item.id}>
                                         <td>{item.feesFor} </td>
-                                        <td>{item.amount} </td>
-                                        <td>{item.dt}</td>
+                                        <td>{item.amount} </td>                                       
 
                                     </tr>)
                                 }
