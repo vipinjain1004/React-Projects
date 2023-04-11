@@ -2,6 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import classes from './StudentNavigation.module.css'
 function StudentsNavigation(){
+  
 	return (
 		<>
 <ul class="nav nav-tabs">

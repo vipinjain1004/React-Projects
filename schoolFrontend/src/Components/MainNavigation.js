@@ -1,10 +1,25 @@
 import React from 'react';
 import { NavLink, Form, useRouteLoaderData } from 'react-router-dom';
 import classes from './MainNavigation.module.css';
+import {useSelector} from 'react-redux';
+import { useDispatch} from 'react-redux';
+import {authenticationAction} from '../store/ReduxAuthentication';
+import { useNavigate } from 'react-router';
 function MainNavigation() {
 	const userData = useRouteLoaderData('root');
+	const isLoggedIn = useSelector(state => state.authentication.isLoggedIn);
+	const authenticationData = useSelector(state => state.authentication);
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
+  
 	const userKey = userData.auth;
 	const userName = userData.user_name;
+	const onClickLogOutHandler = (event)=>{
+		event.preventDefault();
+		dispatch(authenticationAction.logout());
+		navigate('/');
+
+	}
 
 	return (<>
 		<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -23,19 +38,19 @@ function MainNavigation() {
 						<NavLink to="/" className={({ isActive }) => isActive ? `nav-link  active` : `nav-link `} end >
 							Home</NavLink>
 					</li>
-					{userKey && <li class="nav-item"> 
+					{isLoggedIn && <li class="nav-item"> 
 						<NavLink to="/students" className={({ isActive }) => isActive ? `nav-link  active` : `nav-link `} >Students</NavLink>
 					</li>}
 
-					{userKey && (<li class="nav-item">
-						<Form action='/logout' method='post'><button class="btn btn-outline-success">Logout</button></Form>
+					{isLoggedIn && (<li class="nav-item">
+						<button class="btn btn-outline-success" onClick = {onClickLogOutHandler}>Logout</button>
 					</li>)}
-					{!userKey && (<li class="nav-item"><NavLink to="/login" className={({ isActive }) => isActive ? `nav-link  active` : `nav-link `}  >Login</NavLink></li>)}
+					{!isLoggedIn && (<li class="nav-item"><NavLink to="/login" className={({ isActive }) => isActive ? `nav-link  active` : `nav-link `}  >Login</NavLink></li>)}
 
 				</ul>
-				{userName && <span class="navbar-text" style = {{"position": "absolute",
+				{isLoggedIn && <span class="navbar-text" style = {{"position": "absolute",
   "right": "3rem"}}>
-					Welcome : {userName}
+					Welcome : {authenticationData.userName}
 				</span>}
 			</div>
 		</nav>

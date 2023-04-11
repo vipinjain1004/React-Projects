@@ -7,114 +7,6 @@ import SpinnerModel from './Model/SpinnerModel';
 import StudentDetails from './StudentDetails';
 
 function FeesForm(props) {
-
-
-    /*  
-      const fees = {
-          financialYear: "2022-23",
-          monthlyFees: 100,
-          admissionFees: 500,
-          examFees: 50,
-          feesDetail: [
-              [{
-                  id: "212345_1",
-                  feesFor: "ADMISSION",
-                  amount: 20.32,
-                  dt: "10-10-23",
-                  userId: "123456",
-                  status: "PENDING"
-              },
-              {
-                  id: "212345_2",
-                  feesFor: "EXAM",
-                  amount: 100,
-                  dt: "10-10-23",
-                  userId: "123456",
-                  status: "PENDING"
-              },
-              {
-                  id: "212345_3",
-                  feesFor: "JULY",
-                  amount: 100,
-                  dt: "10-10-23",
-                  userId: "123456",
-                  status: "SUBMITTED"
-              },
-              {
-                  id: "212345_4",
-                  feesFor: "AUG",
-                  amount: 100,
-                  dt: "10-10-23",
-                  userId: "123456",
-                  status: "SUBMITTED"
-              }],
-              [{
-                  id: "212345_5",
-                  feesFor: "SEP",
-                  amount: 100,
-                  dt: "10-10-23",
-                  userId: "123456",
-                  status: "SUBMITTED"
-              },
-              {
-                  id: "212345_6",
-                  feesFor: "OCT",
-                  amount: 100,
-                  dt: "10-10-23",
-                  userId: "123456",
-                  status: "SUBMITTED"
-              },
-              {
-                  id: "212345_7",
-                  feesFor: "NOV",
-                  amount: 100,
-                  dt: "10-10-23",
-                  userId: "123456",
-                  status: "SUBMITTED"
-              },
-              {
-                  id: "212345_8",
-                  feesFor: "DEC",
-                  amount: 100,
-                  dt: "",
-                  userId: "",
-                  status: "PENDING"
-              }],
-              [{
-                  id: "212345_9",
-                  feesFor: "JAN",
-                  amount: 100,
-                  dt: "",
-                  userId: "",
-                  status: "PENDING"
-              },
-              {
-                  id: "212345_10",
-                  feesFor: "FEB",
-                  amount: 100,
-                  dt: "",
-                  userId: "",
-                  status: "PENDING"
-              },
-              {
-                  id: "212345_11",
-                  feesFor: "MAR",
-                  amount: 100,
-                  dt: "",
-                  userId: "",
-                  status: "PENDING"
-              },
-              {
-                  id: "212345_12",
-                  feesFor: "APR",
-                  amount: 100,
-                  dt: "",
-                  userId: "",
-                  status: "PENDING"
-              }]
-          ]
-  
-      };*/
     const [fees, setFees] = useState({});
     const [total, setTotal] = useState(0);
     const [monthlyChecked, setMonthlyChecked] = useState(0);
@@ -125,7 +17,7 @@ function FeesForm(props) {
     const [admissionTotal, setAdmissionTotal] = useState(0);
     const [examTotal, setExamTotal] = useState(0);
     const [selectBoxFinancialYearValue, setSelectBoxFinancialYearValue] = useState('2023-24');
-    const [response, setResponse] = useState({});
+    const [submitFeesResponse, setSubmitFeesResponse] = useState({});
     const [feeDetailsResponse, setFeeDetailsResponse] = useState({});
     const [showReceiptModel, setShowReceiptModel] = useState(false);
     const [hardCopyNo, setHardCopyNo] = useState('');
@@ -145,39 +37,34 @@ function FeesForm(props) {
         } else if (!response.ok && response.status === 500) {
             throw new Response(JSON.stringify({ message: 'Something went wrong' }), { status: 500 });
         } else {
-            console.log(response);
+            //console.log(response);
             const resdata = await response.json();
             setFees(resdata.responseBody);
             setIsLoading(false);
-
             if (resdata.responseBody) {
                 setAdmissionTotal(0);
                 setExamTotal(0);
                 setMonthlyTotal(0);
                 setSelectBoxFinancialYearValue(resdata.responseBody.financialYear);
             }
-
-
             return null;
         }
         return null;
     }
 
-    useEffect(() => {
-        //fetcher.submit({ id: props.studentDetails.id, financialYear: selectBoxFinancialYearValue }, { method: "post", action: "getFeesDetails" });
+    useEffect(() => {       
         callGetFeesDetails(props.studentDetails.id, selectBoxFinancialYearValue);
-        console.log('Total Value' + monthyTotal + ' ' + examTotal + ' ' + admissionTotal);
         setTotal(0);
     }, [])
     useEffect(() => {
-        console.log("data " + JSON.stringify(state));
-        console.log("Fetcher " + JSON.stringify(fetcher));
+        //console.log("data " + JSON.stringify(state));
+      //  console.log("Fetcher " + JSON.stringify(fetcher));
         if (state === 'idle' && data) {
             setShowSpinner(false)
-            console.log("Idle Statye" + JSON.stringify(data));
-            setResponse(data);
+          //  console.log("Idle Statye" + JSON.stringify(data));
+            setSubmitFeesResponse(data);
             setShowReceiptModel(true);
-            console.log("Idle Statye" + JSON.stringify(response));
+           // console.log("Idle Statye" + JSON.stringify(response));
 
         }
         if (state === 'submitting') {
@@ -187,9 +74,7 @@ function FeesForm(props) {
     }, [data, state])
 
 
-    useEffect(() => {
-        console.log('Total Value' + monthyTotal + ' ' + examTotal + ' ' + admissionTotal);
-        console.log('Total Fees DEtail' + JSON.stringify(fees));
+    useEffect(() => {     
         setTotal(Number(monthyTotal) + Number(examTotal) + Number(admissionTotal));
     }, [monthyTotal, examTotal, admissionTotal])
 
@@ -252,7 +137,7 @@ function FeesForm(props) {
 
     const onClickSubmitHandler = (event) => {
         setShowSpinner(true);
-        console.log("Student Details" + props.studentDetails);
+       // console.log("Student Details" + props.studentDetails);
         event.preventDefault();
         const submittedFeesDetail = {
             studentId: props.studentDetails.id,
@@ -281,7 +166,7 @@ function FeesForm(props) {
                 }
             ]
         }
-        console.log("Submit details" + JSON.stringify(submittedFeesDetail));
+       // console.log("Submit details" + JSON.stringify(submittedFeesDetail));
 
         fetcher.submit({ feesDetails: JSON.stringify(submittedFeesDetail) }, { method: "post", action: "/submitFeesDetails" });
     }
@@ -295,9 +180,7 @@ function FeesForm(props) {
 
     return (
         <>
-
         <div class="card " style={{ margin: '2rem' }}>
-
             <div class="card-header">
                 Fees Form
             </div>
@@ -350,7 +233,6 @@ function FeesForm(props) {
                         {!isLoading &&
                             <div class="card" style={{ margin: '2rem 0rem 2rem 1.5rem' }}>
                                 <div class="card-body">
-
                                     {admissionChecked > 0 && <div class="row">
                                         <div class="form-group  col-3" >
                                             <label htmlFor="admissionFees">Admission Fees</label>
@@ -485,7 +367,7 @@ function FeesForm(props) {
 
                                     <div class="row">
                                         <div class="col" style={{ marginTop: "1rem" }}>
-                                            <button class="btn btn-outline-primary" type="button" style={{ marginRight: "1rem" }} onClick={onClickSubmitHandler} readOnly={(admissionChecked === 0 && monthlyChecked === 0 && examChecked === 0) || showSpinner}>
+                                            <button class="btn btn-outline-primary" type="button" style={{ marginRight: "1rem" }} onClick={onClickSubmitHandler} readOnly={showSpinner}>
                                                 {showSpinner && <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>}
                                                 {showSpinner ? '  Submitting' : 'Submit'}
                                             </button>
@@ -505,7 +387,7 @@ function FeesForm(props) {
             onHide={feeSubmitCloseButtonHander}
             show={showReceiptModel}
             actionOnClick={submitModelOnClick}
-            responseBody={response.responseBody} />}
+            responseBody={submitFeesResponse.responseBody} />}
         <SpinnerModel show={showSpinner} />
 
         </>

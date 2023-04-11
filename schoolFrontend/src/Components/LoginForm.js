@@ -1,22 +1,34 @@
-import React from 'react';
+import React,{useEffect} from 'react';
 import { Form, useFormAction, redirect, useActionData } from 'react-router-dom';
 import { useNavigate, json } from "react-router";
+import {useDispatch} from 'react-redux';
+import {authenticationAction} from '../store/ReduxAuthentication';
 function LoginForm() {
-	
-	const errData = useActionData();
+	const navigate = useNavigate();   	
+	const data = useActionData();
+	const  dispatch = useDispatch();
 	var errData1 = '';
-	if (errData) {
-		errData1 = JSON.parse(JSON.stringify(errData));
-		console.log("Errore MEsa " + errData1.message);
-	}
-	const navigate = useNavigate();
+	
+	useEffect(()=>{		
+		if (data && data.status === 200) {
+			let d1 = JSON.parse(JSON.stringify(data));
+			console.log("ACtion Data Login" +JSON.stringify(data));
+			dispatch(authenticationAction.login({payload : d1.data.userName}));			
+			navigate('/');
+		}else 	if (data && data.status === 500) {
+			errData1 = JSON.parse(JSON.stringify(data));
+			console.log("Errore MEsa " + errData1.message);
+		}
+	},[data])
+
+	
 
 	function cancelHandler() {
 		navigate('/');
 	}
 	return (
 		<>
-		{errData && (<p> {errData1.message} </p>)}
+		{data && data.status === 500 && (<p> {errData1.message} </p>)}
 		<section class="vh-100">
 			<div class="container-fluid h-custom">
 				<div class="row d-flex justify-content-center align-items-center h-100">
@@ -87,6 +99,10 @@ export async function action({ request, params }) {
 	console.log("After update " + exp);
 	localStorage.setItem("expiration", exp.toISOString());
 	localStorage.setItem('user_name', loginData.user_name);
-	return redirect('/');
+	return json({ data: {
+		userName: data.get('user_name'),
+		pwd: data.get('pwd')
+	}, status: 200 });
+//	return redirect('/');
 
 }

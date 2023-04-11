@@ -12,13 +12,16 @@
   "author": "CodeMix",
   "license": "ISC",
   "dependencies": {
+    "@reduxjs/toolkit": "^1.9.3",
     "bootstrap": "^5.2.3",
     "react": "^16.2.0",
     "react-bootstrap": "^2.7.2",
     "react-dom": "^16.2.0",
+    "react-redux": "^8.0.5",
     "react-route": "^1.0.3",
     "react-router-dom": "^6.8.1",
-    "react-scripts": "^2.1.5"
+    "react-scripts": "^2.1.5",
+    "redux": "^4.2.1"
   },
   "browserslist": [
     ">0.2%",
@@ -26,5 +29,5 @@
     "not ie <= 11",
     "not op_mini all"
   ],
-  "proxy": "http://192.168.60.135:8080"
+  "proxy": "http://192.168.115.135:8080"
 }
