@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import ClassSelectBox from './ClassSelectBox';
 import { useFetcher, useSubmit } from 'react-router-dom';
+import {useSelector} from 'react-redux';
 function StudentFilterForm(props) {
+    const authenticationData = useSelector(state => state.authentication);
     const submit = useSubmit();
     const [classValue, setClassValue] = useState('');
     const [enterFName, setEnterFName] = useState('');    
@@ -11,7 +13,7 @@ function StudentFilterForm(props) {
         setEnterFName(event.target.value);    }
   
     useEffect(() => {
-        fetcher.submit({fName : enterFName, stdClass : classValue, limit:props.limit, offset:props.offset}, { method: "post", action: "/fetchStudentsList" });        
+        fetcher.submit({fName : enterFName, stdClass : classValue, limit:props.limit, offset:props.offset,token: authenticationData.token}, { method: "post", action: "/fetchStudentsList" });        
     }, [props.offset, props.limit]);
 
     const getClassValue = (value) => {

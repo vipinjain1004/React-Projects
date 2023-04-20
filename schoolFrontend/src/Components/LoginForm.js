@@ -1,21 +1,29 @@
 import React,{useEffect} from 'react';
 import { Form, useFormAction, redirect, useActionData } from 'react-router-dom';
 import { useNavigate, json } from "react-router";
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {authenticationAction} from '../store/ReduxAuthentication';
 function LoginForm() {
 	const navigate = useNavigate();   	
+	const isLoggedIn = useSelector(state => state.isLoggedIn);
 	const data = useActionData();
 	const  dispatch = useDispatch();
 	var errData1 = '';
+
 	
 	useEffect(()=>{		
-		if (data && data.status === 200) {
-			let d1 = JSON.parse(JSON.stringify(data));
-			console.log("ACtion Data Login" +JSON.stringify(data));
-			dispatch(authenticationAction.login({payload : d1.data.userName}));			
+		if (data && data.responseMetaData.statusCode === 200) {	
+			console.log("ACtion Data Login" +JSON.stringify(data));				
+			const exp = new Date();
+			console.log(exp);
+			exp.setHours(exp.getHours() + 1);
+			console.log("After update " + exp);
+			localStorage.setItem("expiration", exp.toISOString());
+			localStorage.setItem('userName', data.responseBody.userName);
+			localStorage.setItem('token',  'Bearer ' + data.responseBody.token);
+			dispatch(authenticationAction.login({payload : {'token' : data.responseBody.token, 'userName': data.responseBody.userName}}));			
 			navigate('/');
-		}else 	if (data && data.status === 500) {
+		}else if (data ) {
 			errData1 = JSON.parse(JSON.stringify(data));
 			console.log("Errore MEsa " + errData1.message);
 		}
@@ -41,13 +49,13 @@ function LoginForm() {
 
 							<div class="form-outline mb-4">
 								<input type="email" class="form-control form-control-lg"
-									id="user_name" name="user_name" placeholder="Enter a valid email address" />
+									id="user_name" name="user_name" defaultValue = 'vipin@agm.cm' placeholder="Enter a valid email address" />
 								<label class="form-label" for="form3Example3">Email address</label>
 							</div>
 
 							<div class="form-outline mb-3">
 								<input type="password" class="form-control form-control-lg"
-									placeholder="Enter password" id="pwd" name="pwd" />
+									placeholder="Enter password" defaultValue = 'password' id="pwd" name="pwd" />
 								<label class="form-label" for="form3Example4">Password</label>
 							</div>
 
@@ -81,28 +89,29 @@ function LoginForm() {
 }
 export default LoginForm;
 export async function action({ request, params }) {
-	const data = await request.formData();
-	const userName = data.get('user_name');
-	const pwd = data.get('pwd');
-	if (userName === 'xyz@xyz.com') {
-		return json({ message: 'Could not authenticate user.', status: 500 });
+	const data1 = await request.formData();
+	const userName = data1.get('user_name');
+	const pwd = data1.get('pwd');
+	const data2 = {
+		'username': userName,
+		'password' : pwd		
 	}
-	const loginData = {
-		user_name: data.get('user_name'),
-		pwd: data.get('pwd')
-	};
-	console.log(JSON.stringify(loginData));
-	localStorage.setItem("user_key", loginData.user_name + '-' + loginData.pwd);
-	const exp = new Date();
-	console.log(exp);
-	exp.setHours(exp.getHours() + 1);
-	console.log("After update " + exp);
-	localStorage.setItem("expiration", exp.toISOString());
-	localStorage.setItem('user_name', loginData.user_name);
-	return json({ data: {
-		userName: data.get('user_name'),
-		pwd: data.get('pwd')
-	}, status: 200 });
-//	return redirect('/');
+	const response = await fetch('/authenticate', {  // Enter your IP address here
+		method: 'Post',
+		headers: {
+            'content-type': 'application/json'
+        },
+		body: JSON.stringify(data2) // body data type must match "Content-Type" header
+	})
+	console.log('DAta on submit action' +JSON.stringify(response));
+	if (!response.ok) {
+		console.log('Data coud not be fetched!');
+		return json({ message: 'Could not authenticate user.', status: 500 });
+	} else {
+		console.log(response + '\nRequest Data ' +JSON.stringify(data2));
 
+		return response;
+	} 
+	
+	
 }

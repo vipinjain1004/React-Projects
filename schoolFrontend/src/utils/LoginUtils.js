@@ -1,7 +1,7 @@
 import React from 'react';
 import { redirect } from 'react-router';
 export function getAuthKey() {
-    const userKey = localStorage.getItem('user_key');
+    const userKey = localStorage.getItem('token');
     console.log("User Key : " + userKey);
     if (!userKey) {
         return null;
@@ -10,6 +10,7 @@ export function getAuthKey() {
     if (tokenDuration < 0) {
         return 'EXPIRED';
     }
+    
     return userKey;
 }
 
@@ -38,5 +39,5 @@ export function getTokenDuration() {
     return duration;
 }
 export function getUserName(){
-    return localStorage.getItem('user_name');
+    return localStorage.getItem('userName');
 }

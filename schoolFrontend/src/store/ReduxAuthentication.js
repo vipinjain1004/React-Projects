@@ -9,12 +9,14 @@ const authenticationSlice = createSlice({
     reducers:{
         login(state, action){
             state.isLoggedIn = true;
-            state.userId = action.payload.userId;
-            state.token = action.payload.token;
-            state.userName = action.payload.payload;
+            state.token = action.payload.payload.token;
+            state.userName = action.payload.payload.userName;
             console.log(action);
         },
         logout(state){
+            localStorage.removeItem('token');
+            localStorage.removeItem('expiration');
+            localStorage.removeItem('userName');
             state.isLoggedIn = false;
             state.userId = '';
             state.token = '';

@@ -18,7 +18,10 @@ function StudentDetailsPage() {
 	const actionOnClickGenericModel = async () => {
 		const url = '/student/' + params.studentId + '/delete';
 		const response = await fetch(url, {
-			method: 'delete'
+			method: 'delete',
+			headers: {
+				'Authorization': localStorage.getItem('token')
+			},
 		});
 		if (!response.ok) {
 			throw new Error('Data coud not be fetched!')
@@ -81,6 +84,9 @@ async function loadStudentDetail(studentId) {
 	const url = '/student/' + studentId + '/get';
 	const response = await fetch(url, {  // Enter your IP address here
 		method: 'GET',
+		  headers: {
+            'Authorization': localStorage.getItem('token')
+        },
 		// body data type must match "Content-Type" header
 	});
 

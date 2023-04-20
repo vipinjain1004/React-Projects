@@ -31,6 +31,10 @@ function FeesForm(props) {
         const response = await fetch(`/fees/getDetails?id=${stdId ? stdId : ''}&financialYear=${financialYear ? financialYear : ''}`,
             {
                 method: 'GET',
+                headers: {
+                    'Authorization': localStorage.getItem('token')
+                }
+                
             });
         if (!response.ok && response.status != 500) {
             throw new Response(JSON.stringify({ message: response.message }), { status: response.status });
@@ -402,7 +406,8 @@ export async function action({ request, params }) {
     const response = await fetch(`/fees/add`, {  // Enter your IP address here
         method: 'Post',
         headers: {
-            'Content-Type': 'application/json'
+            'Authorization': localStorage.getItem('token'),
+            'content-type':'application/json'
         },
         body: feeData// body data type must match "Content-Type" header
     })

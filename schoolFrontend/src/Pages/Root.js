@@ -19,6 +19,7 @@ function RootLayout() {
 			return;
 		}
 		const tokenDuration = getTokenDuration();
+		dispatch(authenticationAction.login({payload : token.auth}));		
 		setTimeout(() => {
 			// submit(null, { action: '/logout', method: 'post' })
 			dispatch(authenticationAction.logout());

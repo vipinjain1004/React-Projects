@@ -86,6 +86,9 @@ export default StudentPage;
 async function getAllDetails() {
 	const response = await fetch('/student/getAll', {
 		method: 'GET',
+		headers: {
+            'Authorization': localStorage.getItem('token')
+        },
 		// body data type must match "Content-Type" header
 	});
 	if (!response.ok && response.status != 500) {

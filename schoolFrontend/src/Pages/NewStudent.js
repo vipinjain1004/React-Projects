@@ -23,8 +23,9 @@ export async function action({ request, params }) {
 	const response = await fetch('/student/add', {  // Enter your IP address here
 		method: 'Post',
 		headers: {
-			'Content-Type': 'application/json'
-		},
+			'Content-Type': 'application/json',
+		    'Authorization': localStorage.getItem('token')
+        },
 		body: JSON.stringify(studentData) // body data type must match "Content-Type" header
 	})
 	console.log('DAta on submit action' +JSON.stringify(response));

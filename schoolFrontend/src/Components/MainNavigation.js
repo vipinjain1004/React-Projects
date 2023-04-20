@@ -1,8 +1,7 @@
 import React from 'react';
 import { NavLink, Form, useRouteLoaderData } from 'react-router-dom';
 import classes from './MainNavigation.module.css';
-import {useSelector} from 'react-redux';
-import { useDispatch} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import {authenticationAction} from '../store/ReduxAuthentication';
 import { useNavigate } from 'react-router';
 function MainNavigation() {
@@ -15,7 +14,7 @@ function MainNavigation() {
 	const userKey = userData.auth;
 	const userName = userData.user_name;
 	const onClickLogOutHandler = (event)=>{
-		event.preventDefault();
+		event.preventDefault();	
 		dispatch(authenticationAction.logout());
 		navigate('/');
 
