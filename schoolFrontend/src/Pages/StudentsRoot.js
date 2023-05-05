@@ -1,6 +1,5 @@
-import React, { Suspense } from 'react';
+import React from 'react';
 import { Outlet } from 'react-router-dom';
-import MainNavigation from '../Components/MainNavigation';
 import StudentsNavigation from '../Components/StudentsNavigation';
 import { useSelector } from 'react-redux';
 function StudentRootLayout() {

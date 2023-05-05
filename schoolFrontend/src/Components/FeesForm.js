@@ -1,10 +1,9 @@
-import React, { useState, useRef, useEffect, Suspense } from 'react'
-import { Form, useActionData, redirect, useFetcher, useNavigate, Await } from "react-router-dom";
+import React, { useState,  useEffect, useCallback} from 'react'
+import { useFetcher, useNavigate } from "react-router-dom";
 import classes from './FeesForm.module.css';
 import SelectBoxFinancialYear from './SelectBoxFinancialYear';
 import FeesSubmitModel from './Model/FeesSubmitModel'
 import SpinnerModel from './Model/SpinnerModel';
-import StudentDetails from './StudentDetails';
 
 function FeesForm(props) {
     const [fees, setFees] = useState({});
@@ -12,22 +11,20 @@ function FeesForm(props) {
     const [monthlyChecked, setMonthlyChecked] = useState(0);
     const [admissionChecked, setAdmissionChecked] = useState(0);
     const [examChecked, setExamChecked] = useState(0);
-    const [isAdmissionFeesSubmitted, setIsAdmissionFeesSubmitted] = useState(false);
     const [monthyTotal, setMonthlyTotal] = useState(0);
     const [admissionTotal, setAdmissionTotal] = useState(0);
     const [examTotal, setExamTotal] = useState(0);
     const [selectBoxFinancialYearValue, setSelectBoxFinancialYearValue] = useState('2023-24');
-    const [submitFeesResponse, setSubmitFeesResponse] = useState({});
-    const [feeDetailsResponse, setFeeDetailsResponse] = useState({});
+    const [submitFeesResponse, setSubmitFeesResponse] = useState({});    
     const [showReceiptModel, setShowReceiptModel] = useState(false);
     const [hardCopyNo, setHardCopyNo] = useState('');
     const [showSpinner, setShowSpinner] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
     const fetcher = useFetcher();
-    const { data, state, formAction } = fetcher;
+    const { data, state } = fetcher;
 
-    const callGetFeesDetails = async (stdId, financialYear) => {
+    const callGetFeesDetails = async (stdId, financialYear) => {        
         const response = await fetch(`/fees/getDetails?id=${stdId ? stdId : ''}&financialYear=${financialYear ? financialYear : ''}`,
             {
                 method: 'GET',
@@ -98,7 +95,7 @@ function FeesForm(props) {
     }, [admissionChecked]);
 
 
-    const checkBoxOnChange = (event, value) => {
+    const checkBoxOnChange = useCallback((event, value) => {
         if (value === 'ADMISSION') {
             if (event.target.checked) {
                 setAdmissionChecked(monthlyChecked + 1);
@@ -122,7 +119,7 @@ function FeesForm(props) {
             }
             setMonthlyTotal(monthlyChecked * fees.monthlyFees);
         }
-    }
+    })
     const getSelectBoxFinancialYear = (value) => {
         setSelectBoxFinancialYearValue(value);
     }
